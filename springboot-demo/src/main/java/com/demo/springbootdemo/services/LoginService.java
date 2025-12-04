@@ -56,6 +56,8 @@ public class LoginService {
                 response.setSuccess(false);
                 response.setMessageLabel("auth_signin_blocked_user_error_message");
             }else{
+                loggedInUser.setAttempts(0);
+                userController.save(loggedInUser);
                 LoginResponse loginResponse = new LoginResponse();
                 loginResponse.setUser(loggedInUser);
                 loginResponse.setCompany(company);
@@ -191,6 +193,7 @@ public class LoginService {
             response.setStatus(HttpStatus.UNAUTHORIZED);
             response.setSuccess(false);
             response.setMessageLabel("auth_profile_expired_error_message");
+            response.setDoLogout(true);
         }else{
             String email = jwtUtil.extractUsername(token);
             User user = userController.getUserByEmail(email);

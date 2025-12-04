@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -26,8 +27,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .cors().and()
+        http.
+                csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configure(http))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Allow framing from same origin
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/events/**").permitAll()
@@ -35,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/company/**").hasRole("ADMIN")
                         .requestMatchers("/management/**").hasAnyRole("ADMIN","MANAGER")
                         .requestMatchers("/public/**").permitAll()
+//                        .requestMatchers("/", "/index.html", "/assets/**", "/**.js", "/**.css").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

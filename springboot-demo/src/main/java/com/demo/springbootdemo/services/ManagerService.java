@@ -430,4 +430,35 @@ public class ManagerService {
         return response;
     }
 
+    @PostMapping(path = "/unlockuser")
+    public ApiResponse<User> unlockUser(@RequestParam("id") String userEmail, HttpServletRequest request) {
+        ApiResponse<User> response = new ApiResponse<>();
+        String token = jwtUtil.extractTokenFromCookie(request);
+        if (token == null || !jwtUtil.validateToken(token)) {
+            response.setData(null);
+            response.setStatus(HttpStatus.UNAUTHORIZED);
+            response.setSuccess(false);
+            response.setMessageLabel("auth_profile_expired_error_message");
+            response.setDoLogout(true);
+        } else {
+            User existingUser = userController.getUserByEmail(userEmail);
+            if (existingUser == null) {
+                response.setData(null);
+                response.setStatus(HttpStatus.UNAUTHORIZED);
+                response.setSuccess(false);
+                response.setMessageLabel("auth_profile_expired_error_message");
+                response.setDoLogout(true);
+            } else {
+                existingUser.setLocked(false) ;
+                existingUser.setAttempts(0);
+                userController.save(existingUser);
+                response.setData(existingUser);
+                response.setStatus(HttpStatus.OK);
+                response.setSuccess(true);
+                response.setShowToast(false);
+            }
+        }
+        return response;
+    }
+
 }
