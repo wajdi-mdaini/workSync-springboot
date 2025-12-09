@@ -41,7 +41,6 @@ public class SecurityConfig {
                         .requestMatchers("/company/**").hasRole("ADMIN")
                         .requestMatchers("/management/**").hasAnyRole("ADMIN","MANAGER")
                         .requestMatchers("/public/**").permitAll()
-//                        .requestMatchers("/", "/index.html", "/assets/**", "/**.js", "/**.css").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -59,9 +58,13 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(frontBasePath)
+                        .allowedOrigins(
+                                "https://worksync.tn",
+                                frontBasePath
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
+                        .exposedHeaders("Set-Cookie")
                         .allowCredentials(true);
             }
         };
