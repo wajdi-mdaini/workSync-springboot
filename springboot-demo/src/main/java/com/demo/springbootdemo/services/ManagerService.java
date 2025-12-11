@@ -408,8 +408,8 @@ public class ManagerService {
                     user.setCreationDate(new Date().getTime());
                     user.setAttempts(0);
                     user.setLocked(false);
-                    user.setSicknessLeaverSold(0F);
-                    user.setHolidaySold(0F);
+                    user.setSicknessLeaverSold(10F);
+                    user.setHolidaySold(28F);
                 }
                 if(editUserRequest.isEditRequest() || userWithSameEmail == null){
                     user = userController.save(user);

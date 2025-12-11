@@ -117,8 +117,8 @@ public class UserController implements UserDetailsService {
             user.setLocked(false);
             user.setAttempts(0);
             user.setCreationDate(new Date().getTime());
-            user.setSicknessLeaverSold(0F);
-            user.setHolidaySold(0F);
+            user.setSicknessLeaverSold(10F);
+            user.setHolidaySold(28F);
             user.setProfilePictureUrl("assets/img/default_profile_picture.png");
             String generatedPassword = passwordGenerator.generateStrongPassword(companySettings);
             user.setPassword(passwordEncoder.encode(generatedPassword)); // hash the password
@@ -417,8 +417,7 @@ public class UserController implements UserDetailsService {
         List<User> users = userRepository.findAll();
         users.forEach(user -> {
             Company userCompany = user.getCompany();
-            Float currentSicknessLeaverSold = user.getSicknessLeaverSold();
-            user.setSicknessLeaverSold(currentSicknessLeaverSold + userCompany.getSettings().getSicknessLeaverDaysPerYear());
+            user.setSicknessLeaverSold((float) userCompany.getSettings().getSicknessLeaverDaysPerYear());
             userRepository.save(user);
         });
     }

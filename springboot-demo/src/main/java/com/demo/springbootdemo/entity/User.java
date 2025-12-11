@@ -34,7 +34,7 @@ public class User {
     private String country;
     private String postCode;
     private String title;
-    private Float holidaySold = 0F;
+    private Float holidaySold = 28F;
     private Float sicknessLeaverSold = 10F;
     @Enumerated(EnumType.STRING)
     private Role role;
